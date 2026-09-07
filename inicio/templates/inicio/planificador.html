@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planificador de Estudio Inteligente</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; padding: 0 20px;">
+    <h1>Planificador de Estudio Inteligente</h1>
+
+    <h2>Agregar Nueva Prueba</h2>
+    <form method="POST" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        <p><input type="text" name="asignatura" placeholder="Asignatura (ej: Matemáticas)" required style="width: 100%; padding: 8px;"></p>
+        <p><input type="text" name="prueba" placeholder="Tema/Prueba (ej: Geometría)" required style="width: 100%; padding: 8px;"></p>
+        <p>Fecha de la prueba: <input type="date" name="fecha" required style="padding: 8px;"></p>
+        <p>¿Cuánto sabes del tema?
+            <select name="nivel" style="padding: 8px;">
+                <option value="1">Sé nada (0-20%)</option>
+                <option value="2">Sé poco (20-40%)</option>
+                <option value="3">Nivel medio (40-60%)</option>
+                <option value="4">Sé bastante (60-80%)</option>
+                <option value="5">Dominado (80-100%)</option>
+            </select>
+        </p>
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Generar Plan</button>
+    </form>
+
+    <hr>
+
+    <h2>Mis Pruebas Registradas</h2>
+    <ul>
+        {% for ev in evaluaciones %}
+            <li style="margin-bottom: 10px;">
+                <strong>{{ ev.asignatura }}</strong> - {{ ev.prueba }} (Fecha: {{ ev.fecha_prueba }})
+                <a href="{% url 'eliminar' ev.id %}" style="color: darkred; font-weight: bold; margin-left: 15px;">Eliminar esta prueba</a>
+            </li>
+        {% empty %}
+            <li>No tienes evaluaciones agregadas.</li>
+        {% endfor %}
+    </ul>
+
+    {% if evaluaciones %}
+        <p><a href="{% url 'vaciar_todo' %}" style="background-color: #dc3545; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px;">Borrar todo e iniciar de nuevo</a></p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Plan de Estudio para Hoy</h2>
+    <ul>
+        {% for sesion in sesiones_hoy %}
+            <li style="margin-bottom: 10px;">
+                <strong>{{ sesion.evaluacion.asignatura }} - {{ sesion.evaluacion.prueba }}</strong>: {{ sesion.minutos_estimados }} minutos recomendados.
+                <a href="{% url 'recalcular' sesion.evaluacion.id %}" style="color: orange; margin-left: 15px;">No pude estudiar hoy (Recalcular)</a>
+            </li>
+        {% empty %}
+            <li>No tienes sesiones de estudio programadas para hoy.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
