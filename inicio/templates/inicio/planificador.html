@@ -109,7 +109,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="h5 fw-bold m-0"><i class="bi bi-calendar-event me-2 text-primary"></i>Mis Pruebas Registradas</h3>
                     {% if evaluaciones %}
-                    <form method="POST" action="{% url 'borrar_todo' %}" style="display:inline;">
+                    <form method="POST" action="{% url 'vaciar_todo' %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">Borrar todo</button>
                     </form>
@@ -123,7 +123,7 @@
                             <strong class="d-block text-capitalize">{{ item.asignatura }} - {{ item.prueba }}</strong>
                             <small class="text-muted"><i class="bi bi-clock me-1"></i>Fecha: {{ item.fecha_prueba }}</small>
                         </div>
-                        <a href="{% url 'eliminar_prueba' item.id %}" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Eliminar esta prueba">
+                        <a href="{% url 'eliminar' item.id %}" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Eliminar esta prueba">
                             <i class="bi bi-trash fs-5"></i>
                         </a>
                     </div>
