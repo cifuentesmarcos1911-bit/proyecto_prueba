@@ -49,6 +49,13 @@
             justify-content: space-between;
             align-items: center;
         }
+        .sesion-card {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body class="py-5">
@@ -123,9 +130,14 @@
                             <strong class="d-block text-capitalize">{{ item.asignatura }} - {{ item.prueba }}</strong>
                             <small class="text-muted"><i class="bi bi-clock me-1"></i>Fecha: {{ item.fecha_prueba }}</small>
                         </div>
-                        <a href="{% url 'eliminar' item.id %}" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Eliminar esta prueba">
-                            <i class="bi bi-trash fs-5"></i>
-                        </a>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{% url 'recalcular' item.id %}" class="btn btn-sm btn-outline-warning text-dark" title="Recalcular plan si no estudiaste hoy">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                            <a href="{% url 'eliminar' item.id %}" class="btn btn-sm btn-link text-danger p-0 ms-1" title="Eliminar esta prueba">
+                                <i class="bi bi-trash fs-5"></i>
+                            </a>
+                        </div>
                     </div>
                     {% endfor %}
                 {% else %}
@@ -140,14 +152,30 @@
             <div class="main-card border-start border-4 border-success">
                 <h3 class="h5 fw-bold mb-3"><i class="bi bi-check2-circle text-success me-2"></i>Plan de Estudio para Hoy</h3>
                 
-                {% if plan_hoy %}
-                    <ul class="list-group list-group-flush">
-                        {% for sesion in plan_hoy %}
-                        <li class="list-group-item bg-transparent px-0 border-0">
-                            <i class="bi bi-dot text-success fs-3 align-middle"></i> {{ sesion }}
-                        </li>
-                        {% endfor %}
-                    </ul>
+                {% if sesiones_hoy %}
+                    {% for sesion in sesiones_hoy %}
+                    <div class="sesion-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold fs-6 text-dark mb-1">{{ sesion.evaluacion.asignatura }}</h5>
+                                <p class="text-secondary small mb-2">Tema: {{ sesion.evaluacion.prueba }}</p>
+                            </div>
+                            <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
+                                <i class="bi bi-clock me-1"></i>
+                                {% if sesion.minutos %}
+                                    {{ sesion.minutos }} min
+                                {% elif sesion.duracion_minutos %}
+                                    {{ sesion.duracion_minutos }} min
+                                {% else %}
+                                    {{ sesion.duracion }} min
+                                {% %}
+                            </span>
+                        </div>
+                        {% if sesion.descripcion %}
+                            <p class="small text-muted mb-0 border-top pt-2 mt-1">{{ sesion.descripcion }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
                 {% else %}
                     <p class="text-muted m-0"><i class="bi bi-emoji-smile me-2"></i>No tienes sesiones de estudio programadas para hoy.</p>
                 {% endif %}
