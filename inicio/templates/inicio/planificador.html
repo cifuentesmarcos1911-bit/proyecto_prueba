@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador de Estudio Inteligente</title>
-    <!-- Bootstrap 5 CSS para un diseño limpio y moderno -->
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
@@ -62,7 +62,7 @@
     </div>
 
     <div class="row g-4">
-        <!-- Columna Izquierda: Agregar Prueba -->
+        <!-- Columna Izquierda: Agregar Nueva Prueba -->
         <div class="col-md-6">
             <div class="main-card h-100">
                 <h3 class="h5 fw-bold mb-4 text-dark"><i class="bi bi-plus-circle-fill text-primary me-2"></i>Agregar Nueva Prueba</h3>
@@ -75,8 +75,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-secondary small fw-bold">TEMA / CONTENIDO</label>
-                        <input type="text" name="tema" class="form-control form-control-lg bg-light" placeholder="Ej: Geometría" required>
+                        <label class="form-label text-secondary small fw-bold">TEMA / PRUEBA</label>
+                        <input type="text" name="prueba" class="form-control form-control-lg bg-light" placeholder="Ej: Geometría" required>
                     </div>
 
                     <div class="mb-3">
@@ -95,20 +95,20 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-primary-custom w-100 text-white">
-                        <i class="bi bi-lightning-charge-fill me-2"></i>Generar Plan de Estudio
+                        <i class="bi bi-lightning-charge-fill me-2"></i>Generar Plan
                     </button>
                 </form>
             </div>
         </div>
 
-        <!-- Columna Derecha: Pruebas Registradas y Plan de hoy -->
+        <!-- Columna Derecha: Pruebas Registradas y Plan para Hoy -->
         <div class="col-md-6 d-flex flex-column gap-4">
             
             <!-- Pruebas Registradas -->
             <div class="main-card flex-fill">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="h5 fw-bold m-0"><i class="bi bi-calendar-event me-2 text-primary"></i>Mis Pruebas</h3>
-                    {% if pruebas %}
+                    <h3 class="h5 fw-bold m-0"><i class="bi bi-calendar-event me-2 text-primary"></i>Mis Pruebas Registradas</h3>
+                    {% if evaluaciones %}
                     <form method="POST" action="{% url 'borrar_todo' %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">Borrar todo</button>
@@ -116,14 +116,14 @@
                     {% endif %}
                 </div>
 
-                {% if pruebas %}
-                    {% for prueba in pruebas %}
+                {% if evaluaciones %}
+                    {% for item in evaluaciones %}
                     <div class="prueba-item">
                         <div>
-                            <strong class="d-block text-capitalize">{{ prueba.asignatura }} - {{ prueba.tema }}</strong>
-                            <small class="text-muted"><i class="bi bi-clock me-1"></i>Fecha: {{ prueba.fecha }}</small>
+                            <strong class="d-block text-capitalize">{{ item.asignatura }} - {{ item.prueba }}</strong>
+                            <small class="text-muted"><i class="bi bi-clock me-1"></i>Fecha: {{ item.fecha_prueba }}</small>
                         </div>
-                        <a href="{% url 'eliminar_prueba' prueba.id %}" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Eliminar">
+                        <a href="{% url 'eliminar_prueba' item.id %}" class="btn btn-sm btn-link text-danger p-0 ms-2" title="Eliminar esta prueba">
                             <i class="bi bi-trash fs-5"></i>
                         </a>
                     </div>
@@ -140,9 +140,9 @@
             <div class="main-card border-start border-4 border-success">
                 <h3 class="h5 fw-bold mb-3"><i class="bi bi-check2-circle text-success me-2"></i>Plan de Estudio para Hoy</h3>
                 
-                {% if sesiones_hoy %}
+                {% if plan_hoy %}
                     <ul class="list-group list-group-flush">
-                        {% for sesion in sesiones_hoy %}
+                        {% for sesion in plan_hoy %}
                         <li class="list-group-item bg-transparent px-0 border-0">
                             <i class="bi bi-dot text-success fs-3 align-middle"></i> {{ sesion }}
                         </li>
