@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Evaluacion, SesionEstudio
 from .utils import generar_o_recalcular_plan
-from datetime import date, datetime
+from datetime import datetime
+from django.utils import timezone
 
 def planificador(request):
     if request.method == 'POST':
@@ -23,7 +24,9 @@ def planificador(request):
         return redirect('planificador')
 
     evaluaciones = Evaluacion.objects.all()
-    sesiones_hoy = SesionEstudio.objects.filter(fecha=date.today())
+    # Usamos la fecha respetando la zona horaria de Django
+    hoy = timezone.now().date()
+    sesiones_hoy = SesionEstudio.objects.filter(fecha=hoy)
     
     return render(request, 'inicio/planificador.html', {
         'evaluaciones': evaluaciones,
@@ -36,8 +39,7 @@ def marcar_no_estudiado(request, evaluacion_id):
     return redirect('planificador')
 
 def eliminar_evaluacion(request, evaluacion_id):
-    evaluacion = get_object_or_404(Evaluacion, id=evaluacion_id)
-    evaluacion.delete()
+    Evaluacion.objects.filter(id=evaluacion_id).delete()
     return redirect('planificador')
 
 def vaciar_todo(request):
